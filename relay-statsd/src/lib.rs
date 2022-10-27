@@ -105,7 +105,7 @@ impl MetricsClient {
     where
         T: Metric + From<String>,
     {
-        relay_log::info!("MetricsClient check send metric {:?}", metric);
+        relay_log::info!("MetricsClient check send metric");
         if !self._should_send() {
             return;
         }

@@ -1661,7 +1661,7 @@ impl EnvelopeProcessorService {
             ref envelope_context,
             ..
         } = *state;
-        relay_log::info!("store_process_event started {:?}", state);
+        relay_log::info!("store_process_event started");
 
         let key_id = project_state
             .get_public_key_config()
