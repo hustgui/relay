@@ -105,10 +105,12 @@ impl MetricsClient {
     where
         T: Metric + From<String>,
     {
+        relay_log::info!("MetricsClient check send metric {:?}", metric);
         if !self._should_send() {
             return;
         }
 
+        relay_log::info!("MetricsClient check passed");
         for (k, v) in &self.default_tags {
             metric = metric.with_tag(k, v);
         }

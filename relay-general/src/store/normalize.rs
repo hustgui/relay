@@ -255,6 +255,11 @@ fn remove_invalid_measurements(
     measurements: &mut Measurements,
     measurements_config: &MeasurementsConfig,
 ) {
+    relay_log::debug!("remove_measurements enter config {:?}", measurements_config);
+    relay_log::debug!(
+        "remove_measurements enter before remove measurement {:?}",
+        measurements
+    );
     let mut custom_measurements_count = 0;
     measurements.retain(|name, value| {
         let measurement = match value.value() {
@@ -282,6 +287,7 @@ fn remove_invalid_measurements(
 
         false
     });
+    relay_log::debug!("measurements after remove: {:?}", measurements);
 }
 
 /// Returns the unit of the provided metric.
@@ -343,10 +349,15 @@ fn normalize_units(measurements: &mut Measurements) {
 
 /// Ensure measurements interface is only present for transaction events.
 fn normalize_measurements(event: &mut Event, measurements_config: Option<&MeasurementsConfig>) {
+    relay_log::debug!("normalize_measurements {:?}", event.measurements);
     if event.ty.value() != Some(&EventType::Transaction) {
         // Only transaction events may have a measurements interface
         event.measurements = Annotated::empty();
     } else if let Some(measurements) = event.measurements.value_mut() {
+        relay_log::debug!(
+            "normalize_measurements enter filter max custom measurement {:?}",
+            measurements_config
+        );
         normalize_units(measurements);
         if let Some(measurements_config) = measurements_config {
             remove_invalid_measurements(measurements, measurements_config);
